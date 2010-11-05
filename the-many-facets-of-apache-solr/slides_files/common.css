@@ -1,0 +1,33 @@
+/* Common styles that should be used in print, slides, and outline mode */
+
+.slide {
+  clear: both;
+}
+
+/* For slides that start new sections, ie: just an h1, centered */
+.sectioncard h1 {
+  white-space: normal;
+  text-align: center;
+  font-size: 300%;
+  width: 100%;
+  left: 0px; /* get rid of some inherited padding/margin */
+  padding: 0px;
+  margin: 0px;
+}
+embed {
+  padding: 5px;
+}
+.notes {
+  clear: both;
+  background-color: #E0E0E0;
+  border-style: dotted;
+  border-width: 1px;
+  padding: 0.2em;
+  margin: 0.2em;
+}
+.notes > p:first-child {
+  margin-top: 0.1em;
+}
+.notes > p {
+  margin-bottom: 0.1em;
+}

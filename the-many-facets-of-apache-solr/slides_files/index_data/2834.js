@@ -1,0 +1,6 @@
+cbsiPrepBK(
+{
+ "campaigns": [
+ ]
+}
+);

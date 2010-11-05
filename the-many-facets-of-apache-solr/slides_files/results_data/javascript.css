@@ -1,0 +1,30 @@
+	.results .listing li.record .inactive .details dd, 
+	.results .listing li.record .inactive .details dt { display: none; }
+
+	.results .listing li.record .inactive .details dd.name-first, 
+	.results .listing li.record .inactive .details dd.objectType-first, 
+	.results .listing li.record .inactive .details dd.physicalDescription-first, 
+	.results .listing li.record .inactive .details dd.taxonomicName-first, 
+	.results .listing li.record .inactive .details dd.date-first, 
+	.results .listing li.record .inactive .details dd.identifier-first, 
+	.results .listing li.record .inactive .details dd.dataSource-first, 
+	.results .listing li.record .inactive .details dt.name-first, 
+	.results .listing li.record .inactive .details dt.objectType-first, 
+	.results .listing li.record .inactive .details dt.physicalDescription-first, 
+	.results .listing li.record .inactive .details dt.taxonomicName-first, 
+	.results .listing li.record .inactive .details dt.date-first, 
+	.results .listing li.record .inactive .details dt.identifier-first, 
+	.results .listing li.record .inactive .details dt.dataSource-first { display: block; }
+
+	.results .listing li.record .active .details dt, 
+	.results .listing li.record .active .details dd { display: block; }
+
+	.results .listing li.record .inactive .actions { display: none; }
+	.results .listing li.record .active .actions { display: block; }
+	
+	.results .listing li.record .inactive .title .extended { display: none; }
+	.results .listing li.record .active .title .extended { display: block; }
+
+	.other-media { display: none; }
+
+	/*.history-listing .criteria { display: none; }*/

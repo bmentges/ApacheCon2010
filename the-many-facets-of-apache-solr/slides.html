@@ -1,0 +1,1516 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+
+
+      <!-- :TODO: S5 can auto scale "objects" but it didn't seem to
+           work well using object instead of embed.
+           .. may need some experimenting
+        -->
+
+
+<title>The Many Facets Of Apache Solr</title>
+<!-- metadata -->
+<meta name="generator" content="S5">
+<meta name="version" content="S5 1.3">
+<meta name="presdate" content="20101105">
+<meta name="author" content="Chris Hostetter">
+<meta name="company" content="Lucid Imagination">
+<!-- meta extensions -->
+<!--
+<meta name="subject" content="[subject]" />
+<meta name="creator" content="[creator]" />
+<meta name="contributor" content="[contributor]" />
+<meta name="publisher" content="[publisher]" />
+-->
+<!-- meta temporary -->
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow">
+<meta name="controlVis" content="hidden">
+<!-- configuration extensions -->
+<meta name="tranSitions" content="false">
+<meta name="fadeDuration" content="500">
+<meta name="incrDuration" content="250">
+<!-- configuration autoplay extension -->
+<meta name="autoMatic" content="false">
+<meta name="playLoop" content="false">
+<meta name="playDelay" content="10">
+<!-- configuration audio extension -->
+<meta name="audioSupport" content="false">
+<meta name="audioVolume" content="100">
+<meta name="audioError" content="false">
+<!-- configuration audio debug -->
+<meta name="audioDebug" content="false">
+<!-- style sheet links -->
+<link rel="stylesheet" href="slides_files/slides.css" type="text/css" 
+media="screen" id="slideProj">
+<link rel="stylesheet" href="slides_files/outline.css" type="text/css" 
+media="screen" id="outlineStyle">
+<link rel="stylesheet" href="slides_files/print.css" type="text/css" 
+media="print" id="slidePrint">
+<link rel="stylesheet" href="slides_files/opera.css" type="text/css" 
+media="projection" id="operaFix">
+<link rel="stylesheet" href="slides_files/common.css" type="text/css" 
+id="commonStyles">
+<!-- embedded styles -->
+<style type="text/css" media="all">
+  /* embedded styles */
+
+  blockquote:before {
+    content: "\0022"
+  }
+  blockquote:after {
+    content: "\0022"
+  }
+  blockquote {
+    padding-top: 1em;
+  }
+  cite { 
+    display: block;
+    padding-left: 50%;
+    width: 50%;
+    text-align: right;
+  }
+  cite:before {
+    content: "-- ";
+  }
+  /* S5 co-ops the code/pre tags in an odd way */
+  .code {
+    font-family: monospace;
+    white-space: pre;
+    text-transform: none;
+  }
+  div.code {
+    margin: 0.5em 0em;
+    padding: 0.5em;
+    background-color: #F3E88E;
+  }
+  span.code {
+    font-weight: bolder;
+  }
+
+</style>
+<!-- S5 JS -->
+<script src="slides_files/slides.js" type="text/javascript"></script><style type="text/css" media="screen" id="blockStyle">.presentation, .layout {display: none; }</style><script type="text/javascript" src="slides_files/soundmanager2.js"></script>
+<style id="s5ss" media="screen, projection">html {font-size: 14px !important;}</style></head><body
+ style="visibility: visible; display: block;">
+
+<div style="display: block;" class="layout">
+  <div id="controls"><a accesskey="t" id="sheet" title="toggle CSS" 
+href="javascript:toggle();">±</a><form action="#" id="controlForm" 
+onmouseover="showHide('s');" onmouseout="showHide('h');"><div 
+style="opacity: 0.9; visibility: hidden;" class="hideme" id="navLinks" 
+title="press [backspace] or double click this area for keyboard help!" 
+ondblclick="createHelpReq();"><a accesskey="q" id="exit" title="exit 
+Show" href="javascript:byby();">×</a><a accesskey="n" id="show-notes" 
+title="show Notes" href="javascript:createNotesWindow();">❏</a><a 
+accesskey="t" id="toggle" title="toggle CSS" href="javascript:toggle();">±</a><a
+ accesskey="h" id="zero" title="goto Start Slide" 
+href="javascript:goTo(0);">|&lt;</a><a accesskey="y" id="prev" 
+title="previous Slide" href="javascript:go(-1);">&lt;</a><a 
+accesskey="x" id="next" title="next Slide" href="javascript:go(1);">&gt;</a><a
+ accesskey="e" id="last" title="goto Last Slide" 
+href="javascript:goTo(smax-1);">&gt;|</a><a id="list" style="cursor: 
+wait;" title="move around until color change to red!">Ξ</a><select 
+style="position: fixed; left: 792px; top: 559px; opacity: 0;" 
+id="jumplist" title="select named Slide" onchange="go('j');"><option 
+selected="selected" value="0">0 : The&nbsp;Many&nbsp;Facets Of 
+Apache&nbsp;Solr</option><option value="1">1 : Why Are We Here?</option><option
+ value="2">2 : What is Solr?</option><option value="3">3 : Elevator 
+Pitch</option><option value="4">4 : Solr In A Nutshell</option><option 
+value="5">5 : What is Faceted Searching?</option><option value="6">6 : 
+Example: CNET</option><option value="7">7 : Example: The Smithsonian</option><option
+ value="8">8 : Example: Lucid Imagination</option><option value="9">9 : 
+Aka: “Faceted Browsing”</option><option value="10">10 : Key Elements of 
+Faceted Search</option><option value="11">11 : Explaining My Terms</option><option
+ value="12">12 : Solr Facets</option><option value="13">13 : 
+Preliminaries: Solr Params</option><option value="14">14 : facet=true</option><option
+ value="15">15 : facet.query=...</option><option value="16">16 : 
+facet.query Results</option><option value="17">17 : facet.field=...</option><option
+ value="18">18 : facet.field Results</option><option value="19">19 : 
+facet.field Options</option><option value="20">20 : facet.date=...</option><option
+ value="21">21 : facet.date Results</option><option value="22">22 : 
+facet.date Options</option><option value="23">23 : Tips &amp; Tricks</option><option
+ value="24">24 : "Pretty" facet.field Terms</option><option value="25">25
+ : "Pretty" facet.field Results</option><option value="26">26 : raw 
+QParser</option><option value="27">27 : Multi-Select Facets: Example</option><option
+ value="28">28 : Multi-Select Facets</option><option value="29">29 : 
+Same Facet, Different Exclusions</option><option value="30">30 : Same 
+Facet, Different Exclusions</option><option value="31">31 : facet.query 
+Labels</option><option value="32">32 : Taxonomy Facets</option><option 
+value="33">33 : Taxonomy Facets: Data</option><option value="34">34 : 
+Taxonomy Facets: Initial Query</option><option value="35">35 : Taxonomy 
+Facets: Drill Down</option><option value="36">36 : Faceting Coarse Date 
+Fields</option><option value="37">37 : Performance Gotchas</option><option
+ value="38">38 : facet.method=...</option><option value="39">39 : 
+facet.enum.cache.minDf=...</option><option value="40">40 : Cache 
+Settings</option><option value="41">41 : Static Warming</option><option 
+value="42">42 : Coming Soon(ish)</option><option value="43">43 : term 
+QParser</option><option value="44">44 : facet.range=...</option><option 
+value="45">45 : facet.range.include=...</option><option value="46">46 : 
+Pivot Facets</option><option value="47">47 : Native Taxonomy Facets</option><option
+ value="48">48 : Questions?</option></select><br><div class="subLinks" 
+id="fadeLinks"><a style="font-weight: bold;" accesskey="f" id="fade" 
+title="Transions" href="javascript:switchFade();">▨</a>&nbsp;</div><div 
+class="subLinks" id="audioLinks" style="margin-left: 0.25em;"><a 
+accesskey="s" id="audio" title="Sound" href="javascript:toggleSounds();">♫</a>&nbsp;<a
+ id="volume" style="cursor: wait;" title="move around until color change
+ to red!">◢</a><select style="position: fixed; left: 490px; top: 608px; 
+opacity: 0;" id="volumelist" title="select Volume" 
+onchange="setVolume();"><option selected="selected" value="100">100</option><option
+ value="90">90</option><option value="80">80</option><option value="70">70</option><option
+ value="60">60</option><option value="50">50</option><option value="40">40</option><option
+ value="30">30</option><option value="20">20</option><option value="10">10</option><option
+ value="0">0</option></select></div><div class="subLinks" id="autoLinks"
+ style="margin-left: 0.25em;"><a accesskey="a" id="auto" title="Auto 
+Play" href="javascript:togglePlay();">▶</a>&nbsp;<a style="font-weight: 
+bold;" accesskey="p" id="pause" title="Pausing" 
+href="javascript:pausePlay();">||</a>&nbsp;<a style="font-weight: bold;"
+ accesskey="l" id="loop" title="Looping" href="javascript:switchLoop();">∞</a>&nbsp;&nbsp;<a
+ title="5 Sec. Delay" href="javascript:setDelay(5);">5</a>·<a title="10 
+Sec. Delay" href="javascript:setDelay(10);">10</a>·<a title="15 Sec. 
+Delay" href="javascript:setDelay(15);">15</a>·<a title="30 Sec. Delay" 
+href="javascript:setDelay(30);">30</a>·<a title="60 Sec. Delay" 
+href="javascript:setDelay(60);">60</a></div></div></form></div>
+  <div id="currentSlide"><!-- DO NOT EDIT --></div>
+  <div id="header"></div>
+  <div id="footer">
+    <h1>The Many Facets Of Apache Solr</h1>
+    <h2>ApacheCon 2010</h2>
+  </div> <!-- footer -->
+</div> <!-- layout -->
+
+<div style="display: block;" class="presentation">
+
+  <!-- SLIDE GAP -->
+  <div style="opacity: 1;" id="slide0" class="slide">
+    <h1>The&nbsp;Many&nbsp;Facets Of Apache&nbsp;Solr</h1>
+    <embed src="slides_files/solr-logo.svg" type="image/svg+xml" 
+class="noprint" style="float: right;" width="40%"> 
+    <h3><nobr>Chris Hostetter</nobr></h3>
+    <br>
+    <h4>2010-11-05</h4>
+    <br clear="all">
+    <h4><a href="http://people.apache.org/%7Ehossman/apachecon2010/">http://people.apache.org/~hossman/apachecon2010/</a></h4>
+    <h4><a href="http://lucene.apache.org/solr/">http://lucene.apache.org/solr/</a></h4>
+           
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+  
+  <!-- SLIDE GAP -->
+  <div id="slide1" class="slide">
+    <h1>Why Are We Here?</h1>
+    
+    <ul>
+      <li>What is Solr?</li>
+      <li>What is Faceted Searching?</li>
+      <li>Solr Facets</li>
+      <li>Tips &amp; Tricks</li>
+      <li>Performance Gotchas</li>
+      <li>Coming Soon(ish)</li>
+    </ul>
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide2" class="slide sectioncard">
+    <h1>What is Solr?</h1>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide3" class="slide">
+    <h1>Elevator Pitch</h1>
+    <blockquote style="">Solr 
+      is a highly scalable open source enterprise search 
+      server based on the Lucene Java search library, with HTTP APIs,
+      caching, replication, and a web administration 
+      interface.</blockquote>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide4" class="slide">
+    <h1>Solr In A Nutshell</h1> 
+    <ul>
+      <li>Index/Query Via HTTP</li>
+      <li>Comprehensive HTML Administration Interfaces</li>
+      <li>Scalability - Horizontal and Vertical</li>
+      <li>Extensible Plugin Architecture</li>
+      <li>Highly Configurable And User Extensible Caching</li>
+      <li>Flexible And Adaptable With XML Configuration</li>
+    </ul>
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide5" class="slide sectioncard">
+    <h1>What is Faceted Searching?</h1>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide6" class="slide">
+    <h1>Example: CNET</h1>
+    <center>
+      <iframe src="slides_files/index.html" class="expand" style="width:
+ 923.25px; height: 488.25px;" frameborder="false" scrolling="yes">
+        &lt;img src="resources/cnet_digital_cameras.png" 
+             width="651" height="429" /&gt;
+      </iframe>
+    </center>
+    <div id="note6" class="notes">
+      <p>
+        Screenshot Source: <a 
+href="http://reviews.cnet.com/digital-camera-reviews/">http://reviews.cnet.com/digital-camera-reviews/</a>
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide7" class="slide">
+    <h1>Example: The Smithsonian</h1>
+    <center>
+      <iframe src="slides_files/results.html" class="expand" 
+style="width: 923.25px; height: 488.25px;" frameborder="false" 
+scrolling="yes">
+        &lt;img src="resources/smithsonian_japanese_art.png" 
+             width="648" height="496" /&gt;
+      </iframe>
+    </center>
+    <div id="note7" class="notes">
+      <p>
+        Screenshot Source: <a 
+href="http://collections.si.edu/search/results.jsp?q=Japanese+art&amp;view=grid&amp;fq=object_type:%22Works+of+art%22">http://collections.si.edu/search/results.jsp?q=Japanese+art&amp;view=grid&amp;fq=object_type:%22Works+of+art%22</a>
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide8" class="slide">
+    <h1>Example: Lucid Imagination</h1>
+    <center>
+      <iframe src="slides_files/psolr_002.html" class="expand" 
+style="width: 923.25px; height: 488.25px;" frameborder="false" 
+scrolling="yes">
+        &lt;img src="resources/lucid_search_multiselect.png" 
+             width="772" height="453" /&gt;
+      </iframe>
+    </center>
+    <div id="note8" class="notes">
+      <p>
+        Screenshot Source: <a 
+href="http://search.lucidimagination.com/search/p:solr?q=Range+Facets">http://search.lucidimagination.com/search/p:solr?q=Range+Facets</a>
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide9" class="slide">
+    <h1>Aka: “Faceted Browsing”</h1>
+    <blockquote cite="http://instone.org/files/KI-FB-SOASIST.pdf">Interaction
+ 
+      style where users filter a set of items by progressively selecting
+ from 
+      only valid values of a faceted classification system.</blockquote>
+    <cite><nobr>Keith Instone,</nobr> SOASIS&amp;T, <nobr>July 8, 2004</nobr></cite>
+    <div id="note9" class="notes">
+      <p>
+        Quote: <a href="http://instone.org/files/KI-FB-SOASIST.pdf">http://instone.org/files/KI-FB-SOASIST.pdf</a>
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide10" class="slide">
+    <h1>Key Elements of Faceted Search</h1>
+    <ul>
+      <li>No hierarchy of options is enforced
+        <ul>
+          <li>Users can apply facet constraints in any order</li>
+          <li>Users can remove facet constraints in any order</li>
+        </ul>
+      </li>
+      <li>No surprises
+        <ul>
+          <li>
+            The user is only given facets and constraints 
+            that make sense in the context of the items 
+            they are looking at
+          </li>
+          <li>
+            The user always knows what to expect before 
+            they apply a constraint
+          </li>
+          </ul>
+      </li>
+    </ul>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide11" class="slide">
+    <h1>Explaining My Terms</h1>
+    <ul>
+      <li>
+        <strong>Facet</strong>: A distinct feature or aspect of a 
+        set of objects; "a way in which a 
+        resource can be classified"
+      </li>
+      <li>
+        <strong>Constraint</strong>: A viable method of limiting a 
+        set of objects
+      </li>
+    </ul>
+    <div id="note11" class="notes">
+      <p>
+        <a href="http://facetmap.com/glossary/">http://facetmap.com/glossary/</a>
+        is the source of quote in my Facet definition.
+      </p>
+      <p>
+        They have a different term for "Constraint" which I don't like
+        as much. 
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide12" class="slide sectioncard">
+    <h1>Solr Facets</h1>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide13" class="slide">
+    <h1>Preliminaries: Solr Params</h1>
+    <ul>
+      <li>
+        Request Based:
+        <div class="code">?q=solr&amp;fq=inStock:true&amp;hl=true</div>
+      </li>
+      <li>
+        <span class="code">solrconfig.xml</span> Defaults &amp; 
+Overrides:
+        <div class="code">&lt;lst name="defaults"&gt;
+  &lt;int name="rows"&gt;50&lt;/int&gt;
+&lt;/lst&gt;
+&lt;lst name="appends"&gt;
+  &lt;str name="fq"&gt;access:public&lt;/str&gt;
+&lt;/lst&gt;
+&lt;lst name="invariants"&gt;
+  &lt;bool name="hl"&gt;false&lt;/bool&gt;
+&lt;/lst&gt;</div>
+      </li>
+    </ul>
+
+    <div id="note13" class="notes">
+      <p>
+        For legibility, all examples of SolrParams in the remainder of
+        this presentation will be non-url escaped, with one param per 
+line.
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE GAP -->
+  <div id="slide14" class="slide">
+    <h1><span class="code">facet=true</span></h1>
+    <ul>
+      <li>
+        Enables (or disables) all faceting support
+      </li>
+      <li>
+        Allows you to provide default faceting params in configs, 
+        while keeping faceting off by default
+      </li>
+    </ul>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide15" class="slide">
+    <h1><span class="code">facet.query=...</span></h1>
+    <ul>
+      <li>
+        Specifies a query string to be used as a Facet Constraint
+      </li>
+      <li>
+        Typically used multiple times to get multiple (discrete) sets
+      </li>
+    </ul>
+    <div class="code">facet.query = rank:[* TO 20]
+facet.query = rank:[21 TO *]</div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide16" class="slide">
+    <h1><span class="code">facet.query Results</span></h1>
+    <div class="code">&lt;result numFound="27" ... /&gt;
+...
+&lt;lst name="facet_counts"&gt;
+ &lt;lst name="facet_queries"&gt;
+  &lt;int name="rank:[* TO 20]"&gt;2&lt;/int&gt;
+  &lt;int name="rank:[21 TO *]"&gt;15&lt;/int&gt;
+ &lt;/lst&gt;
+ ...</div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide17" class="slide">
+    <h1><span class="code">facet.field=...</span></h1>
+    <ul>
+      <li>
+        Specifies a Field to be used as a Facet
+      </li>
+      <li>
+        Uses each value indexed in that Field as a Constraint
+      </li>
+      <li>
+        Most useful when used on fields with a low cardinality
+        relative to the number of documents in the index
+      </li>
+      <li>
+        Can be used multiple times for multiple fields
+      </li>
+    </ul>
+    <div class="code">facet.field = color
+facet.field = category</div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide18" class="slide">
+    <h1><span class="code">facet.field Results</span></h1>
+    <div class="code">&lt;lst name="facet_counts"&gt;
+ ...
+ &lt;lst name="facet_fields"&gt;
+  &lt;lst name="color"&gt;
+    &lt;int name="red"&gt;17&lt;/int&gt;
+    &lt;int name="green"&gt;6&lt;/int&gt;
+    &lt;int name="blue"&gt;2&lt;/int&gt;
+    &lt;int name="yellow"&gt;2&lt;/int&gt;
+    &lt;int name="fuscia"&gt;0&lt;/int&gt;
+    &lt;int name="teal"&gt;0&lt;/int&gt;
+    ...</div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide19" class="slide">
+    <h1><span class="code">facet.field</span> Options</h1>
+    <ul>
+      <li><span class="code">facet.prefix</span> - Restricts the
+        possible constraints to only indexed values with a specified
+        prefix.
+      </li>
+      <li><span class="code">facet.mincount=0</span> - Restricts the
+        constraints returned to those containing a minimum number of
+        documents in the result set.
+      </li>
+      <li><span class="code">facet.sort=count</span> - The ordering of
+        constraints <nobr>(<span class="code">count</span> vs 
+        <span class="code">index</span>)</nobr>
+      </li>
+      <li><span class="code">facet.offset=0</span> - Indicates how many
+        constraints in the specified sort ordering should be skipped in
+        the response.
+      </li>
+      <li><span class="code">facet.limit=100</span> - The number of
+        constraints in the specified sorted order that should be
+        returned starting at the specified offset.
+      </li>
+    </ul>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide20" class="slide">
+    <h1><span class="code">facet.date=...</span></h1>
+    <ul>
+      <li>
+        Specifies a Date Field to be used as a Facet
+      </li>
+      <li>
+        Creates Constraints based on evenly sized date ranges using
+        the Gregorian Calendar
+      </li>
+      <li>
+        Ranges are specified using "Date Math" so they DWIM
+        in spite of variable length months and leap years
+      </li>
+    </ul>
+    <div class="code">facet.date       = pubdate
+facet.date.start = NOW/YEAR-1YEAR
+facet.date.end   = NOW/MONTH+1MONTH
+facet.date.gap   = +1MONTH</div>
+  </div>
+  <div id="slide21" class="slide">
+    <h1><span class="code">facet.date Results</span></h1>
+    <div class="code">&lt;lst name="facet_counts"&gt;
+ ...
+ &lt;lst name="facet_dates"&gt;
+  &lt;lst name="pubdate"&gt;
+    &lt;int name="2009-01-01T00:00:00Z"&gt;4&lt;/int&gt;
+    &lt;int name="2009-02-01T00:00:00Z"&gt;6&lt;/int&gt;
+    &lt;int name="2009-03-01T00:00:00Z"&gt;0&lt;/int&gt;
+    &lt;int name="2009-04-01T00:00:00Z"&gt;13&lt;/int&gt;
+    ...
+    &lt;int name="gap"&gt;+1MONTH&lt;/int&gt;
+    &lt;date name="end"&gt;2010-12-01T00:00:00Z&lt;/date&gt;</div>
+  </div>
+   <!-- SLIDE GAP -->
+  <div id="slide22" class="slide">
+    <h1><span class="code">facet.date</span> Options</h1>
+    <ul>
+      <li><span class="code">facet.date.hardend=false</span> -
+        Determines what effective end date is used when the specified
+        "start" and "end" don't divide into even "gap" sized
+        buckets; <span class="code">false</span> means the last
+        Constraint range may be shorter then the others
+      </li>
+      <li><span class="code">facet.date.other=none</span> - Allows you 
+to
+        specify what other Constraints you are interested in besides the
+        generated ranges: <span class="code">before</span>, 
+        <span class="code">after</span>, <span class="code">between</span>,
+ 
+        <span class="code">none</span>, <span class="code">all</span>
+      </li>
+    </ul>
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide23" class="slide sectioncard">
+    <h1>Tips &amp; Tricks</h1>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide24" class="slide">
+    <h1>"Pretty" <span class="code">facet.field</span> Terms</h1>
+    <ul>
+      <li>Field Faceting uses Indexed Terms</li>
+      <li>
+        Leverage <span class="code">copyField</span> and
+        TokenFilters that will give you good looking Constraints
+      </li>
+    </ul>
+
+    <div class="code">&lt;tokenizer class="solr.PatternTokenizerFactory"
+ 
+           pattern="(,|;)\s*" /&gt;
+&lt;filter class="solr.PatternReplaceFilterFactory" 
+        pattern="\s+" replacement=" " /&gt;
+&lt;filter class="solr.PatternReplaceFilterFactory" 
+        pattern=" and " replacement=" &amp;amp; " /&gt;
+&lt;filter class="solr.TrimFilterFactory" /&gt;
+&lt;filter class="solr.CapitalizationFilterFactory" 
+        onlyFirstWord="false" /&gt;</div>
+
+    <div id="note24" class="notes">
+      <p>
+        If you can use unique identifiers (instead of pretty, long,
+        string labels) it can reduce the memory and simplify the
+        request parsing (see next Tip) but it adds work to your front 
+end
+        application -- keeping track of the mapping between id =&gt;
+        pretty label.  If your application already needs to knows
+        about these mappsings for other purposes, then it's much
+        simpler to take advantage of that.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide25" class="slide">
+    <h1>"Pretty" <span class="code">facet.field</span> Results</h1>
+
+    <div class="code">&lt;field name="category"&gt; books  
+ and magazines; 
+computers,  &lt;/field&gt;</div>
+
+    <div class="code">&lt;lst name="category"&gt;
+ &lt;int name="Books &amp;amp; Magazines"&gt;1&lt;/int&gt;
+ &lt;int name="Computers"&gt;1&lt;/int&gt;
+&lt;/lst&gt;</div>
+
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide26" class="slide">
+    <h1><span class="code">raw</span> QParser</h1>
+    <ul>
+      <li>Default Query Parser does special things with whitespace and 
+punctuation
+      </li>
+      <li>
+        Problematic when "filtering" on Facet Field Constraints that
+        contain whitespace or punctuation
+      </li>
+      <li>
+        Use the <span class="code">raw</span> parser to filter on an
+        exact Term
+      </li>
+    </ul>
+    <div class="code">fq = {!raw f=category}Books &amp; Magazines</div>
+
+    <div id="note26" class="notes">
+      <p>
+        This is utilizing Solr's 
+        <a href="http://wiki.apache.org/solr/LocalParams">LocalParams
+        Syntax</a> to embed metadata directly into the 
+        <span class="code">fq</span> param
+        value.  <span class="code">{!raw}</span> is the short form of 
+        <span class="code">{!type=raw}</span>
+      </p>
+      <p>
+        You could also alter the default parser, but it's unlikely
+        you would want all of your query params parsed with the 
+        <span class="code">raw</span> parser by default.
+      </p>
+      <p>
+        One potential pitfall with using
+        the <span class="code">raw</span> QParser is if you facet on
+        Numeric fields that utilize an encoded representation. (ie:
+        the "TrieFoo" or "SortableFoo" Field Types.  The RawQParser
+        expects truly "Raw" Terms, but for encoded numeric types the
+        term you get in the facet response is the "external" value,
+        and RawQParser won't convert that to the internal value.  The
+        <span class="code">field</span> QParser may be a better choice
+        in those situations (it's the one Yonik recommends) -- However 
+if
+        you have a Query Analyzer that is not 
+        <a href="http://en.wikipedia.org/wiki/Idempotence">idempotent</a>
+        (a situation that's easy to get in w/o realizing it) it's very
+        possible to get incorrect
+        results.  The <span class="code">term</span> QParser discussed
+        later will be the best of both worlds.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide27" class="slide">
+    <h1>Multi-Select Facets: Example</h1>
+    <center>
+      <iframe src="slides_files/psolr_002.html" class="expand" 
+style="width: 923.25px; height: 488.25px;" frameborder="false" 
+scrolling="yes">
+        &lt;img src="resources/lucid_search_multiselect.png" 
+             width="772" height="453" /&gt;
+      </iframe>
+    </center>
+    <div id="note27" class="notes">
+      <p>
+        Screenshot Source: <a 
+href="http://search.lucidimagination.com/search/?q=Range+Facets+#/p:solr">http://search.lucidimagination.com/search/?q=Range+Facets+#/p:solr</a>
+      </p>
+      <p>
+        Clicking a check box for a Constraint in one Facet (like 
+        Projects) causes the result set to change, and affects the
+        counts for Constraints in other Facets (like Source) but it
+        does not affect the counts for other Constraints within the
+        same Facet.
+      </p>
+      <p>
+        This allows the user to select multiple check boxes for the
+        same Facet, getting a result set which contains the Union of
+        those Constraints.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide28" class="slide">
+    <h1>Multi-Select Facets</h1>
+
+    <ul>
+      <li>We can "tag" a filter query with an identifier</li>
+      <li>
+        We can instruct a facet to "exclude" that filter query when
+        computing Constraint counts.
+      </li>
+    </ul>
+
+    <div class="code">          q = Range Facets
+         fq = {!df=project tag=px}Solr
+facet.field = {!ex=px}project
+facet.field = {!ex=sx}source
+facet.query = {!ex=qx}popularity:[100 TO *]</div>
+
+    <div id="note28" class="notes">
+      <p>
+        This is another example of using the
+        <a href="http://wiki.apache.org/solr/LocalParams">LocalParams
+        Syntax</a>, but we are't overriding the QParser used.  In the
+        case of the <span class="code">facet.field</span> params no
+        QParser is used at all.
+      </p>
+    </div>
+  </div>
+
+
+
+  <!-- SLIDE GAP -->
+  <div id="slide29" class="slide">
+    <h1>Same Facet, Different Exclusions</h1>
+
+    <ul>
+      <li>
+        A <span class="code">key</span> can be specified for a facet
+        to change the name used to identify it in the response.
+      </li>
+      <li>
+        This allows you to have multiple instances of a facet, with
+        differnet exclusions.
+      </li>
+    </ul>
+    <div class="code">          q = Hot Rod
+         fq = {!df=colors tag=cx}purple green
+facet.field = {!key=all_colors ex=cx}colors
+facet.field = {!key=overlap_colors}colors</div>
+
+    <div id="note29" class="notes">
+      <p>
+        In this example, we are assuming that the "colors" field is
+        multivalued, and each doc can have many colors listed.
+      </p>
+      <p>
+        As of Solr 1.4.1, specifying a key for a facet
+        does <strong>not</strong> allow you to specify alternate
+        params using the "per-field" syntax
+      </p>
+    </div>
+  </div>
+
+  <!-- SLIDE GAP -->
+  <div id="slide30" class="slide">
+    <h1>Same Facet, Different Exclusions</h1>
+
+    <div class="code">&lt;lst name="facet_fields"&gt;
+ &lt;lst name="all_colors"&gt;
+   &lt;int name="red"&gt;19&lt;/int&gt;
+   &lt;int name="green"&gt;6&lt;/int&gt;
+   &lt;int name="blue"&gt;2&lt;/int&gt;
+   ...
+ &lt;lst name="overlap_colors"&gt;
+   &lt;int name="red"&gt;7&lt;/int&gt;
+   &lt;int name="green"&gt;6&lt;/int&gt;
+   &lt;int name="blue"&gt;1&lt;/int&gt;
+   ...</div>
+
+  </div>
+
+  <!-- SLIDE GAP -->
+  <div id="slide31" class="slide">
+    <h1><span class="code">facet.query</span> Labels</h1>
+    <ul>
+      <li>
+        <span class="code">facet.query</span> params are echoed
+        verbatim when returning the constraint counts
+      </li>
+      <li>
+        When declaring a <span class="code">facet.query</span> in
+        your <span class="code">solrconfig.xml</span>, you can include a
+ 
+        "label" that your presentation layer can parse out for display
+      </li>
+     </ul>
+    <div class="code">facet.query = {!label="Hot!"}
+              +pop:[1 TO *] 
+              +pub_date:[NOW/DAY-1DAY TO *]</div>
+
+    <div class="code">&lt;lst name="facet_queries"&gt;
+ &lt;int name="{!label=&amp;quot;Hot!&amp;quot;}..."&gt;15&lt;/int&gt;
+&lt;/lst&gt;
+...</div>
+
+    <div id="note31" class="notes">
+      <p>
+        You can also use <span class="code">{!key}</span>
+        with <span class="code">facet.query</span>, but then the query
+        string is not included in the response, and your presentation
+        layer won't know what to specify in
+        an <span class="code">fq</span> to filter on that constraint.
+      </p>
+    </div>
+     
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide32" class="slide">
+    <h1>Taxonomy Facets</h1>
+    <ul>
+      <li>What If Your Documents Are Organized in a Taxonomy?</li>
+      <li>What if you want to treat that Taxonomy as a Facet?</li>
+    </ul>
+    <center>
+      <embed src="slides_files/taxonomy-facet.svg" type="image/svg+xml" 
+width="710" height="352"> 
+    </center>
+    <div id="note32" class="notes">
+      <p>
+        Note that the dotted lines represent the possibility of many
+        more nodes in the Taxonomy, and that documents can be
+        associated with any nodes (not just leaf nodes).  We also have
+        some documents associated with more then one node (History of
+        Physics) 
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide33" class="slide">
+    <h1>Taxonomy Facets: Data</h1>
+    <ul>
+      <li>
+        Flattened Data
+        <div class="code">Doc#1: NonFic &gt; Law
+Doc#2: NonFic &gt; Sci
+Doc#3: NonFic &gt; Hist
+Doc#3: NonFic &gt; Sci &gt; Phys</div>
+      </li>
+      <li>
+        Indexed Terms
+        <div class="code">Doc#1: 0/NonFic, 1/NonFic/Law
+Doc#2: 0/NonFic, 1/NonFic/Sci
+Doc#3: 0/NonFic, 1/NonFic/Hist, 
+       1/NonFic/Sci, 2/NonFic/Sci/Phys</div>
+      </li>
+    </ul>
+    <div id="note33" class="notes">
+      <p>
+        Abbreviations are being used for the Indexed Terms instead of
+        the full category names to save space in the slides.
+      </p>
+      <p>
+        If every document in our "corpus" was part of the Taxonomy,
+        and "NonFic" is the root node, then we wouldn't need to
+        index a term for it.
+      </p>
+      <p>
+        If our taxonomy extends up (ie: NonFic has a
+        parent node) or if some documents are not in the Taxonomy at 
+all,
+        then it definitely matters
+      </p>
+    </div>
+  </div>
+   <!-- SLIDE GAP -->
+  <div id="slide34" class="slide">
+    <h1>Taxonomy Facets: Initial Query</h1>
+
+    <div class="code">facet.field    = category
+facet.prefix   = 1/NonFic
+facet.mincount = 1</div>
+
+
+    <div class="code">&lt;result numFound="164" ...
+&lt;lst name="facet_fields"&gt;
+ &lt;lst name="category"&gt;
+   &lt;int name="1/NonFic/Sci"&gt;2&lt;/int&gt;
+   &lt;int name="1/NonFic/Hist"&gt;1&lt;/int&gt;
+   &lt;int name="1/NonFic/Law"&gt;1&lt;/int&gt;</div>
+    
+    <div id="note34" class="notes">
+      <p>
+        Note that some docs may not even be mapped to the Taxonomy, so
+        they aren't included in the counts.  In these examples, we're
+        assuming lots of docs in the index, but only the 3 previously
+        mentioned documents are categorized in the Taxonomy.
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide35" class="slide">
+    <h1>Taxonomy Facets: Drill Down</h1>
+
+    <div class="code">fq             = {!raw f=category}1/NonFic/Sci
+facet.field    = category
+facet.prefix   = 2/NonFic/Sci
+facet.mincount = 1</div>
+
+    <div class="code">&lt;result numFound="2" ...
+&lt;lst name="facet_fields"&gt;
+ &lt;lst name="category"&gt;
+   &lt;int name="2/NonFic/Sci/Phys"&gt;1&lt;/int&gt;</div>
+
+    <div id="note35" class="notes">
+      <p>
+        In this example, the nodes were encoded into Terms in such a
+        way that as we drill down the Taxonomy (using 
+        <span class="code">facet.prefix</span>) we only ever see the
+        immediate children of the "current" node.  We can eliminate
+        the usage of <span class="code">facet.prefix</span> to always
+        see the "active branches" of the Taxonomy, or with some added
+        creativity and redundency in the Terms we index, we can also
+        make it always show N levels below the current node.
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide36" class="slide">
+    <h1>Faceting Coarse Date Fields</h1>
+    <ul>
+      <li>Situation: Dates are indexed with coarse granularity</li>
+      <li>
+        Anoyance: Date Faceting Constraints are inclusive of both 
+        range boundaries
+      </li>
+       <li>
+         Problem: Many documents have values that call on exact
+         boundaries, and are included in multiple constraints
+       </li>
+      <li>
+        Solution: Fudge your field values (or your Constraints)
+        by 1 millisecond
+      </li>
+    </ul>
+    <div id="note36" class="notes">
+      <p>
+        I would typically recommend a "+1MILLISECOND" fudge factor
+        when indexing your data because it keeps the day, month, and
+        year accurate for all date values, and keeps the faceting
+        simple. 
+        Alternatively a "-1MILLISECOND" fudge in the Constraints can
+        also work in some cases, but it changes the "day" (and can
+        have cascading changes to the month and year) so it can
+        confuse people if you just do simple formating/truncation of
+        the output values.  It can also be problematic for "Month
+        Faceting" (2010-01-31T23:59:59.999Z +1MONTH =
+        2010-02-28T23:59:59.999Z +1MONTH = 2010-03-28...)
+      </p>
+      <p>
+        The new <span class="code">facet.date.include</span> param
+        (discussed later in this presentation) eliminates the problem
+        of overlapping ranges in the facet results, but there is still
+        the issue of constructing a query to
+        apply the corresponding constraint as a filter.  
+      </p>
+      <p>
+        <a href="https://issues.apache.org/jira/browse/SOLR-355">SOLR-355</a>
+        adds functionality to the Lucene QueryParser to allow mixed
+        usage of '{' and ']' in range queries to make this possible.
+        It has been committed to the trunk, so it should certainly be
+        included in Solr 4.0, and it may be back ported and included in
+        Solr 3.1 as well.
+        <a href="https://issues.apache.org/jira/browse/SOLR-1896">SOLR-1896</a>
+        also aims to simplify this in a way that will be trivial to use 
+in
+        conjunction with <span class="code">facet.date.include</span>,
+        but no patch is currently available.
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide37" class="slide sectioncard">
+    <h1>Performance Gotchas</h1>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide38" class="slide">
+    <h1><span class="code">facet.method=...</span></h1>
+    <ul>
+      <li>
+        <span class="code">facet.field</span> can use two different
+        algorithms depending on
+        the <span class="code">facet.method</span> param:
+        <ul>
+          <li>
+            <span class="code">fc</span>: Iterates over the result
+            documents, incrementing a count for each associated Term.
+            This uses the <span class="code">fieldCache</span> (same
+            as <span class="code">sort</span>) for single valued
+            fields, or the <span class="code">fieldValueCache</span>
+            for multi-valued fields.
+          </li>
+          <li>
+            <span class="code">enum</span>: Iterates over all the
+            Terms in the field, computing counts using set
+            intersections with the result documents. This uses the 
+            <span class="code">filterCache</span> (same 
+            as <span class="code">fq</span>)
+          </li>
+        </ul>
+      </li>
+      <li>
+        <span class="code">fc</span> is the default method for
+        non-Boolean Fields
+      </li>
+      <li>
+        <span class="code">enum</span> can be a better method
+        when the number of distinct Terms is going to remain small and
+        fixed no matter how many documents you index
+      </li>
+    </ul>
+
+    <div id="note38" class="notes">
+      <p>
+        Lucene (and Solr) are "Inverted Indexes" - given a Set of
+        "Docs-&gt;Fields" mappings, the Fields are parsed into
+        Terms and a "Terms-&gt;Docs" data structure is used for fast
+        lookups. 
+        <span class="code">fieldCache</span> and 
+        <span class="code">fieldValueCache</span> are essentially
+        "Inverted, Inverted Indexes" (or to put it another way:
+        "UnInverted Indexes") supporting fast Doc-&gt;Term(s) lookups.
+      </p>
+      <p>
+        An example when <span class="code">facet.method=enum</span>
+        is a good choice is something like
+        a <span class="code">us_state</span> field.  No matter how
+        many documents you have in your index, or how many documents
+        match a given search request, the number of distinct Terms
+        (and the number of set intersections) will never be more then
+        50. 
+      </p>
+      <p>
+        Another example when <span class="code">facet.method=enum</span>
+        is a good choice is when you run out of RAM trying to build
+        the <span class="code">fieldValueCache</span>.   (Common when
+        trying to facet on a Full-Text field)
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide39" class="slide">
+    <h1><span class="code">facet.enum.cache.minDf=...</span></h1>
+    
+    <ul>
+      <li>
+        <span class="code">facet.method=enum</span> normally results
+        in the <span class="code">filterCache</span> being used for
+        every Term in the Facet field.
+      </li>
+      <li>
+        For some Terms, the total number of documents containing that
+        Term may be so small, the time/effort spent computing the set
+        of documents is cheaper then the "slot" it will take up in the
+        <span class="code">filterCache</span> 
+        (when it might evict something else)
+      </li>
+      <li>
+        <span class="code">facet.enum.cache.minDf</span> allows you
+        to pick a minimum document
+        frequency. The <span class="code">filterCache</span> will not
+        be used for Terms that are in fewer documents then the value
+        you specify.
+      </li>
+      <li>
+        The default value is <span class="code">0</span>, increasing
+        it will result in increased execution time, but decreased
+        memory (ie: <span class="code">filterCache</span>) usage.
+      </li>
+    </ul>
+    <div id="note39" class="notes">
+      <p>
+        <span class="code">facet.method=enum</span>
+        and <span class="code">facet.enum.cache.minDf=100</span> (or
+        higher) is basically the only way to feasible Facet on a
+        Full-Text field.
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide40" class="slide">
+    <h1>Cache Settings</h1>
+    <ul>
+      <li>
+        Make sure <span class="code">filterCache</span>
+        and <span class="code">fieldValueCache</span> are big 
+        enough to handle your expected Facet requests w/o constant 
+        eviction
+      </li>
+      <li>
+        Use <span class="code">autowarmCount</span> on
+        your <span class="code">filterCache</span>.  Consider using it
+        on your <span class="code">fieldValueCache</span>.
+      </li>
+    </ul>
+    <div class="code">&lt;filterCache class="solr.FastLRUCache"
+             size="1024"
+             initialSize="1024"
+             autowarmCount="1024"/&gt;</div>
+
+    <div id="note40" class="notes">
+      <p>
+        Sizing caches appropriately depends on how many differnet
+        fields you expect to Facet on, how many distinct Facet
+        Queries, etc....  Step one towards picking good numbers is
+        looking at your caching stats before and after typical
+        queries.  If a single request, on an isolated dev instance
+        that you just started up, causes any evictions: your cache is
+        too small.  Either increase the size, or get rid of it, it's
+        just going to slow you down.
+      </p>
+      <p>
+        <span class="code">autowarmCount</span> controls how many
+        values are pre-computed for each new cache instance whenever
+        the old one needs to be thrown out (ie: a new index is
+        loaded).  The items to pre-compute are selected from the "top"
+        keys of the existing cache.  Using autowarming
+        for <span class="code">fieldValueCache</span> is qustionable
+        because the objects are so big -- one stray request to Facet
+        on an atypical field could eat up a lot of memory until you
+        completley shut down Solr.
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide41" class="slide">
+    <h1>Static Warming</h1>
+    <ul>
+      <li>
+        Use <span class="code">firstSearcher</span> to execute some  
+        "seed" queries with expected Facets when Solr is initially run.
+      </li>
+      <li>
+        Use <span class="code">newSearcher</span> to execute some
+        queries that will populate
+        your <span class="code">fieldCache</span>
+        and <span class="code">fieldValueCache</span> when Solr loads
+        a new index.
+      </li>
+    </ul>
+
+    <div class="code">&lt;listener event="newSearcher" 
+          class="solr.QuerySenderListener"&gt;
+  &lt;arr name="queries"&gt;
+    &lt;lst&gt;
+      &lt;str name="q"&gt;*:*&lt;/str&gt; 
+      &lt;str name="facet"&gt;true&lt;/str&gt;
+      &lt;str name="facet.field"&gt;category&lt;/str&gt;
+      ...</div>
+
+    <div id="note41" class="notes">
+      <p>
+        Static warming queries should simulate real queries as much a
+        possible, but there is no need for a lot of overlap.  The key
+        is to ensure that every field you expect to Facet on is hit,
+        so that the caches used are properly seeded.
+      </p>
+      <p>
+        <span class="code">newSearcher</span> events automaticly
+        trigger "auto warming" for caches that configure it,
+        but <span class="code">fieldCache</span> doesn't currently
+        support auto warming, and as mentioned previously there are 
+        performance reasons why auto
+        warming <span class="code">fieldValueCache</span> may not be
+        wise.  (Those same reasosn would apply
+        to <span class="code">fieldCache</span> even if it did support
+        auto warming)
+      </p>
+    </div>
+    
+
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide42" class="slide sectioncard">
+    <h1>Coming Soon(ish)</h1>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide43" class="slide">
+    <h1><span class="code">term</span> QParser</h1>
+    <ul>
+      <li>
+        All of the advantages of the <span class="code">raw</span>
+        QParser
+      </li>
+      <li>
+        Will also work on encoded numeric fields
+      </li>
+    </ul>
+    <div class="code">fq = {!term f=category}Books &amp; Magazines
+fq = {!term f=weight}1.56</div>
+    
+    <div id="note43" class="notes">
+      <p>
+        <a href="https://issues.apache.org/jira/browse/SOLR-2113">SOLR-2113</a>
+        Tracks this functionality.  It has already been 
+        committed to the trunk, so it should certainly be included in
+        Solr 4.0, and it will likely be back ported and included in
+        Solr 3.1 as well.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide44" class="slide">
+    <h1><span class="code">facet.range=...</span></h1>
+    <p>
+      Same semantics as <span class="code">facet.date</span>, but
+      also works on any numeric field type (that supports range queries)
+    </p>
+    <div class="code">facet.range       = popularity
+facet.range.start = 0.0
+facet.range.end   = 100.0
+facet.range.gap   = 33.333334</div>
+    
+    <div id="note44" class="notes">
+      <p>
+        This funcionality will be included in Solr 3.1
+      </p>
+      <p>
+        FYI: Because of this more generalized functionality, 
+        <span class="code">facet.date</span> will likely be deprecated
+        in future releases.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide45" class="slide">
+    <h1><span class="code">facet.range.include=...</span></h1>
+    <p>
+      New multivalued param for controlling which end points of the
+      Constraint ranges are inclusive.
+    </p>
+    <ul>
+      <li><span class="code">lower</span> - Gap Constraints
+        include their lower bound
+      </li>
+      <li><span class="code">upper</span> - Gap Constraints 
+        include their upper bound
+      </li>
+      <li><span class="code">edge</span> - First/Last Gap Constraints
+        include the 'edge' bounds even if 
+        <span class="code">upper</span>
+        or <span class="code">lower</span> is not specified
+      </li>
+      <li><span class="code">outer</span> - the 'before' and 'after'
+        Constraints will include their bounds, even if they are
+        already included by a Gap Constraint.
+      </li>
+      <li><span class="code">all</span> - shorthand for 
+        <span class="code">lower</span>, <span class="code">upper</span>,
+ 
+        <span class="code">edge</span>, and <span class="code">outer</span>
+      </li>
+    </ul>
+
+    <div id="note45" class="notes">
+      <p>
+        This funcionality will be included in Solr 3.1
+      </p>
+      <p>
+        FYI: <span class="code">facet.date.include</span> has also been
+        added.
+      </p>
+    </div>
+
+  </div>
+  <!-- SLIDE GAP -->
+
+  <!--
+
+     :TODO: Don't add this slide until/unless there is a valid patch
+
+
+  <div class="slide">
+    <h1>:TODO: SOLR-1896: new range faceting savy QParser </h1>
+
+    <p>
+      :TODO: Description
+    </p>
+
+    <div class="notes">
+      <p>
+        This feature is being tracked in 
+        <a href="https://issues.apache.org/jira/browse/SOLR-1896">SOLR-1896</a>.
+        It has not yet been committed, so it is not certain what
+        release it may be in.
+      </p>
+    </div>
+  </div>
+
+  -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide46" class="slide">
+    <h1>Pivot Facets</h1>
+    <ul>
+      <li>
+        Computes a Matrix of Constraint Counts across multiple Facet 
+Fields
+        to generate a "Decision Tree"
+      </li>
+      <li>
+        "If you constrain Facet X by A, then the Constraint Counts
+        for Facet Y will be ..." 
+      </li>
+    </ul>
+    <div class="code">&lt;lst name="cat,inStock"&gt;
+  &lt;lst name="electronics"&gt;
+    &lt;int name="true"&gt;10&lt;/int&gt;
+    &lt;int name="false"&gt;4&lt;/int&gt;
+  &lt;/lst&gt;
+  &lt;lst name="memory"&gt;
+    &lt;int name="true"&gt;3&lt;/int&gt;
+    &lt;int name="false"&gt;0&lt;/int&gt;
+  &lt;/lst&gt;
+  ...
+    </div>
+
+    <div id="note46" class="notes">
+      <p>
+        This feature is being tracked in 
+        <a href="https://issues.apache.org/jira/browse/SOLR-792">SOLR-792</a>.
+        It has already been committed to
+        the trunk, so it should certainly be included in
+        Solr 4.0.  It <em>may</em> be back ported and included in
+        Solr 3.1 as well, depending on demand and complexity in portin.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+  <div id="slide47" class="slide">
+    <h1>Native Taxonomy Facets</h1>
+    <ul>
+      <li>
+        Proposed <span class="code">FieldType</span> and faceting code
+        that transparently deals with Taxonomy based fields (ie: no
+        special indexing code needed to generate all the Terms)
+      </li>
+      <li>
+        Includes a <span class="code">facet.depth</span> param for
+        controlling how many levels of the Taxonomy to display counts
+        for on any given request.
+      </li>
+    </ul>
+
+    <div id="note47" class="notes">
+      <p>
+        This feature is being tracked in 
+        <a href="https://issues.apache.org/jira/browse/SOLR-64">SOLR-64</a>.
+        A patch is available but it has not yet been committed, so it
+        is not certain what release it may be in.
+      </p>
+      <p>
+        I find the output format currently used by the patch to be too
+        confusing to even show on this slide.
+      </p>
+    </div>
+  </div>
+  <!-- SLIDE GAP -->
+
+
+  <!--
+     .
+     .
+     .
+     ................ SECTION GAP .....................
+     .
+     .
+     .
+     .
+     -->
+
+  <!-- SLIDE GAP -->
+  <div id="slide48" class="slide">
+    <h1>Questions?</h1>
+
+    <ul>
+      <li><a href="http://wiki.apache.org/solr/SolrFacetingOverview">http://wiki.apache.org/solr/SolrFacetingOverview</a></li>
+      <li><a href="http://lucene.apache.org/solr/mailing_lists.html">solr-user<span><!-- -->@</span><!-- -->lucene<span>.</span>apache<!-- -->.org</a></li>
+    </ul>
+    <center>
+      <embed src="slides_files/solr-logo.svg" type="image/svg+xml" 
+height="400"> 
+    </center>
+  </div>
+  <!-- SLIDE GAP -->
+
+
+
+
+  <!-- .................. SLIDE STUB .........
+  <div class="slide">
+    <h1>[slide title]</h1>
+    
+    <ul>
+      <li>[point one]</li>
+      <li>[point two]</li>
+      <li>[point three]</li>
+      <li>[point four]</li>
+      <li>[point five]</li>
+    </ul>
+    
+    <div class="handout">
+      <p>
+        [any material that should appear in print but not on the slide]
+      </p>
+    </div>
+
+    <div class="notes">
+      <p>
+        [any material that should appear in notes window but not on the slide]
+      </p>
+    </div>
+    
+  </div>
+  .................. SLIDE STUB .........    -->
+</div> <!-- presentation -->
+
+<div style="position: absolute; left: -256px; width: 1px; height: 1px;" 
+class="movieContainer"><embed name="sm2movie-embed" id="sm2movie-embed" 
+src="slides_files/soundmanager2.swf" quality="high" 
+allowscriptaccess="always" 
+pluginspage="http://www.macromedia.com/go/getflashplayer" 
+type="application/x-shockwave-flash" width="1" height="1"></div><div 
+style="display: none;" id="soundmanager-debug"></div></body></html>
