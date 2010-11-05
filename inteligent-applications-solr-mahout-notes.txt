@@ -1,0 +1,111 @@
+Building Blocks: Acquisition and Extraction
+
+- Acquisition:
+* Nutch
+* Solr DIH (Data Import Handler)
+* ManifoldCF
+
+- Extraction
+* Tika (PDFBox, POI, etc)
+
+Building Blocks: Language Analysis
+
+- Basics:
+* Morphology, Tokenization, Stemming/Lemmatization, Language Detection
+* Lucene has extensive support, plus pluggable
+
+- Intermediate:
+* Phrases, Part of Speech, Collocations, Shallow Parsing...
+* Lucene, Mahout, OpenNLP
+
+- Advanced:
+* Concepts, Sentiment, Relationships, Deep parsing...
+* Machine Learning Tools like Mahout
+
+Building Blocks: Domain Knowledge
+
+- You, Your Business, Your Requirements
+* Focus groups
+
+- Examples:
+* Synonyms, taxonomies
+* Genre (sublanguage: jargon, abbreviations, etc)
+* Content relationships (explicit and implicit links)
+* Metadata: locaiton, time, authorship, content type
+
+Building Blocks: Search
+
+- Main interface which users interact with a system
+* Doesnt require explicit typing in of keywords
+* Sometimes a search need not be a search
+
+- Less frequently used capabilities become more important:
+* Pluggable Query Parsing
+* Spans/Payloads
+* Terms, TermVectors
+
+- Lucene/Solr can actually stand-in for many of the higher layers (organizational)
+
+Building Blocks: Organization / Discovery
+
+- Organization
+* Classification (named entity extraction)
+* Clustering (Collection, Search Results)
+* Topic Modeling
+* Summarization (Document, Collection)
+
+- Discovery/Guidance
+* Faceting/Clusters
+* Auto-suggest
+* Did you mean ?
+* Related Searches
+* More Like This
+
+Building Blocks: Relationships
+
+- Harness multilevel relationships
+* Doc <-> Doc:
+** excplicit (links and citations, etc),
+** implicit: shared concepts
+* User <-> Doc: read/rated/reviewed/shared
+* User <-> User:
+** explicit: friend, colleague, reports to, friend of friend.
+** implicit: email, instant msg, asked/answered question
+
+Building Blocks: Users
+
+- History
+* Saved Searches -> Deeper analysis -> Alerts
+
+- Profile
+* Likes/Dislikes
+* Location
+* Roles
+
+- Enhance/Restrict queries, personalize scoring/ranking/recommendations
+
+Building Blocks: Aggregating Analysis
+
+- You're an engineer, do you know what's in your production logs ?
+
+- Log analysis
+* Who, what, when, where, why ?
+* Hadoop, Pig, Mahout, etc
+
+- Classification/Clustering
+* Label/Group users based on their interactions
+** Power users, new users, etc.
+** Mahout and other machine learning techniques
+
+Tying it Together
+
+- Key Extension Points
+* Analyzer Chain
+* UpdateProcessor (indexing side)
+* Request Handler
+* SearchComponent
+* Qparser (plugin)
+* Event Listeners
+
+
+https://github.com/gsingers/ApacheCon2010
